@@ -50,10 +50,6 @@ xCoord = [xNot]
 yCoord = [yNot]
 xPoint = [xNot]
 yPoint = [yNot]
-xVels = []
-yVels = []
-angVels = []
-times = []
 
 # (1, .23562, -.23562) = 90 degree clockwise turn
 # (1, -.23562, .23562) = 90 degree counterclockwise turn
@@ -72,11 +68,7 @@ for z in range(0, 9):
             xNot, yNot, theta, angVel, xV, yV = kinematics(kList[x][1], kList[x][2], WIDTH, xNot, yNot, theta, DT)
             xCoord.append(xNot)
             yCoord.append(yNot)
-            xVels.append(xV)
-            yVels.append(yV)
-            angVels.append(angVel)
             time += .1
-            times.append(time)
             print("Position: (" + str(xNot) + ", " + str(yNot) + ") theta = " + str(theta))
             print("Trajectory: (" + str(xV) + ", " + str(yV) + ") Angular Velocity = " + str(angVel))
             print("At T = " + str(time))
@@ -91,26 +83,10 @@ for z in range(0, 9):
 
 
 
-fig, ax = plt.subplots(2,2, constrained_layout=True, figsize=(6,6))
-ax[0, 0].step(xCoord, yCoord)
-ax[0, 0].set_xlabel('x (meters)')
-ax[0, 0].set_ylabel('y (meters)')
-ax[0, 0].plot(xPoint, yPoint, linewidth = 2, marker = '.')
-ax[0, 0].set_title("Skid Steer coverage of 5x5 plot")
-
-ax[0, 1].set_xlabel('t (seconds)')
-ax[0, 1].set_ylabel('x velocity (m/s)')
-ax[0, 1].plot(times, xVels)
-ax[0, 1].set_title("X Velocity over time")
-
-ax[1, 0].set_xlabel('t (seconds)')
-ax[1, 0].set_ylabel('y velocity (m/s)')
-ax[1, 0].plot(times, yVels)
-ax[1, 0].set_title("Y Velocity over time")
-
-ax[1, 1].set_xlabel('t (seconds)')
-ax[1, 1].set_ylabel('theta velocity (m/s)')
-ax[1, 1].plot(times, angVels)
-ax[1, 1].set_title("Angular Velocity over time")
-
+fig, ax = plt.subplots(constrained_layout=True, figsize = (6, 6))
+ax.step(xCoord, yCoord)
+ax.set_xlabel('x (meters)')
+ax.set_ylabel('y (meters)')
+plt.title("Question 2: Skid Steer coverage of 5x5 plot")
+plt.plot(xPoint, yPoint, linewidth = 2, marker = '.')
 plt.show()

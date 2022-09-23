@@ -17,8 +17,8 @@ VELOCITY = 8
 DIAMETER = 5
 DT = .1
 time = 0
-xNot = 3
-yNot = 3
+xNot = 0
+yNot = 0
 theta = 0
 xCoord = []
 yCoord = []
@@ -30,11 +30,11 @@ angVels = []
 times = []
 
 figure, ax = plt.subplots(tight_layout=True, figsize=(6, 6))
-Drawing_uncolored_circle = plt.Circle((3, 3),
+Drawing_uncolored_circle = plt.Circle((0, 0),
                                       2.5,
                                       fill=False)
 ax.set_aspect(1)
 ax.add_artist(Drawing_uncolored_circle)
-ax.set(xlim=(0, 6), ylim=(0, 6))
+ax.set(xlim=(-3, 3), ylim=(-3, 3))
 plt.title('Question 1: Skid Steer On A Circle')
 plt.show()

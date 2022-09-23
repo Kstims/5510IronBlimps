@@ -12,32 +12,10 @@ def kinematics(l, r, W, x, y, theta, DT):
     xNew = x - .5 * (l + r) * np.sin(theta) * DT
     yNew = y + .5 * (l + r) * np.cos(theta) * DT
     thetaNew = theta + (1 / W) * (r - l) * DT
-    aVel = (thetaNew - theta) / DT
-    xVel, yVel = getVelocity(x, y, xNew, yNew, DT)
+    aVel = (1 / W) * (r - l)
+    xVel = -.5 * (l + r) * np.sin(theta)
+    yVel = .5 * (l + r) * np.cos(theta)
     return xNew, yNew, thetaNew, aVel, xVel, yVel
-
-
-def getVelocity(x0, y0, x1, y1, DT):
-    distance = np.sqrt(np.square(x1 - x0) + np.square(y1 - y0))
-    velocity = distance / DT
-    magX = x1 - x0
-    magY = y1 - y0
-    if magX == 0:
-        if magY > 0:
-            thetaDegrees = 90
-        else:
-            thetaDegrees = 180
-    else:
-        thetaDegrees = np.arctan(magY / magX)
-    yVel = velocity * np.sin(thetaDegrees)
-    xVel = velocity * np.cos(thetaDegrees)
-    if np.isnan(yVel):
-        yVel = 0
-    if np.isnan(xVel):
-        xVel = 0
-    print("")
-    return xVel, yVel
-
 
 WIDTH = .3
 DT = .1

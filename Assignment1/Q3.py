@@ -70,7 +70,7 @@ for z in range(0, 9):
 
 
 
-fig, ax = plt.subplots(2,2, constrained_layout=True, figsize=(6,6))
+fig, ax = plt.subplots(2,2, constrained_layout=True, figsize=(8,8))
 ax[0, 0].step(xCoord, yCoord)
 ax[0, 0].set_xlabel('x (meters)')
 ax[0, 0].set_ylabel('y (meters)')

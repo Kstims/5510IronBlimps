@@ -1,0 +1,8 @@
+part a
+
+part b
+
+part c
+x = 0.62314 m
+y = 0.68637 m
+z = -0.14 m

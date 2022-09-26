@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 plt.style.use('_mpl-gallery')
 
-
+#Creates the list of commands for the bot to follow every tick
 def generateCommands(interval, turn):
     commandList = []
 
@@ -12,6 +12,7 @@ def generateCommands(interval, turn):
 
     return commandList
 
+#Runs the list of commands to move the bot
 def runCommands(kList):
     time = 0
     xNot = -2.5
@@ -43,6 +44,7 @@ def runCommands(kList):
 
     plotCharts(xCoord, yCoord, xPoint, yPoint, xVels, yVels, angVels, times, kList[0][0])
 
+#calculates position and velocities
 def kinematics(x, y, theta, alpha,tInterval):
     LENGTH = .75
     VELOCITY = 8
@@ -55,7 +57,7 @@ def kinematics(x, y, theta, alpha,tInterval):
     yVel = VELOCITY * np.cos(theta)
     return xNew, yNew, thetaNew, aVel, xVel, yVel
 
-
+#draws the figures
 def plotCharts(xCoordinate, yCoordinate, xPos, yPos, xVelocity, yVelocity, aVelocity, tList, deltaT):
     figure, ax = plt.subplots(2, 2, tight_layout=True, figsize=(6, 6))
     Drawing_uncolored_circle = plt.Circle((0, 0),
@@ -88,9 +90,10 @@ def plotCharts(xCoordinate, yCoordinate, xPos, yPos, xVelocity, yVelocity, aVelo
 
     plt.show(block=False)
 
-
+#runs the program using different delta-Ts
 dt = [.1, .01, 1]
 
+#main driver
 for x in range(len(dt)):
     commandListing = generateCommands(dt[x], -.291457)
     runCommands(commandListing)

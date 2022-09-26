@@ -32,22 +32,21 @@ times = []
 kList = []
 
 #initalize kList orders
-for x in range(100):
-    kList.append((.1, -.291457))
+for x in range(int(10/DT)):
+    kList.append((DT, -.291457))
 
 for x in range(0, len(kList)):
-    for y in range(0, int(kList[x][0]*10)):
-        xNot, yNot, theta, angVel, xV, yV = kinematics(xNot, yNot, theta, kList[x][1], DT)
-        xCoord.append(xNot)
-        yCoord.append(yNot)
-        xVels.append(xV)
-        yVels.append(yV)
-        angVels.append(angVel)
-        time += .1
-        times.append(time)
-        #print("Position: (" + str(xNot) + ", " + str(yNot) + ") theta = " + str(theta))
-        #print("Trajectory: (" + str(xV) + ", " + str(yV) + ") Angular Velocity = " + str(angVel))
-        #print("At T = " + str(time))
+    xNot, yNot, theta, angVel, xV, yV = kinematics(xNot, yNot, theta, kList[x][1], DT)
+    xCoord.append(xNot)
+    yCoord.append(yNot)
+    xVels.append(xV)
+    yVels.append(yV)
+    angVels.append(angVel)
+    time += DT
+    times.append(time)
+    #print("Position: (" + str(xNot) + ", " + str(yNot) + ") theta = " + str(theta))
+    #print("Trajectory: (" + str(xV) + ", " + str(yV) + ") Angular Velocity = " + str(angVel))
+    #print("At T = " + str(time))
     xPoint.append(xNot)
     yPoint.append(yNot)
 
@@ -61,7 +60,12 @@ Drawing_uncolored_circle = plt.Circle((0, 0),
                                       fill=False)
 ax[0, 0].add_artist(Drawing_uncolored_circle)
 ax[0, 0].set_aspect(1)
-ax[0, 0].set(xlim=(-3, 3), ylim=(-3, 3))
+if(DT > .1):
+    ax[0, 0].set(xlim=(-10, 10), ylim=(-10, 10))
+else:
+    ax[0, 0].set(xlim=(-3, 3), ylim=(-3, 3))
+
+
 ax[0, 0].plot(xPoint, yPoint, linewidth = 2, marker = '.')
 ax[0, 0].set_title("Question 1: Ackerman steering On A Circle")
 

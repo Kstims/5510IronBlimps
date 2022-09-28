@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 
 plt.style.use('_mpl-gallery')
 
@@ -17,6 +18,9 @@ def generateCommands(interval, turn):
 
 # Runs the list of commands to move the bot
 def runCommands(kList):
+    VELOCITY = 8
+    RADIUS = 2.5
+
     time = 0
     xNot = -2.5
     yNot = 0
@@ -27,43 +31,48 @@ def runCommands(kList):
     yPoint = [yNot]
     xVels = []
     yVels = []
-    angVels = []
+    # angVels = []
     times = []
+    errors = []
 
     for x in range(0, len(kList)):
-        xNot, yNot, theta, angVel, xV, yV = kinematics(xNot, yNot, theta, kList[x][1], kList[0][0])
+        xNot, yNot, theta, angVel, xV, yV = kinematics(xNot, yNot, theta, kList[x][1], kList[0][0], VELOCITY)
         xCoord.append(xNot)
         yCoord.append(yNot)
         xVels.append(xV)
         yVels.append(yV)
-        angVels.append(angVel)
+        # angVels.append(angVel)
         time += kList[0][0]
         times.append(time)
+        actualRadians = (VELOCITY * time) / RADIUS;
+        actualX = RADIUS * -np.cos(actualRadians);
+        actualY = RADIUS * np.sin(actualRadians);
+        error = np.sqrt(math.pow(xNot - actualX, 2) + math.pow(yNot - actualY, 2))
+        errors.append(error)
         # print("Position: (" + str(xNot) + ", " + str(yNot) + ") theta = " + str(theta))
         # print("Trajectory: (" + str(xV) + ", " + str(yV) + ") Angular Velocity = " + str(angVel))
         # print("At T = " + str(time))
         xPoint.append(xNot)
         yPoint.append(yNot)
 
-    plotCharts(xCoord, yCoord, xPoint, yPoint, xVels, yVels, angVels, times, kList[0][0])
+    plotCharts(xCoord, yCoord, xPoint, yPoint, xVels, yVels, errors, times, kList[0][0])
 
 
 # calculates position and velocities
-def kinematics(x, y, theta, alpha, tInterval):
+def kinematics(x, y, theta, alpha, tInterval, velocity):
     LENGTH = .75
-    VELOCITY = 8
 
-    xNew = x - VELOCITY * np.sin(theta) * tInterval
-    yNew = y + VELOCITY * np.cos(theta) * tInterval
-    thetaNew = theta + (VELOCITY / LENGTH) * np.tan(alpha) * tInterval
-    aVel = (VELOCITY / LENGTH) * np.tan(alpha)
-    xVel = -1 * VELOCITY * np.sin(theta)
-    yVel = VELOCITY * np.cos(theta)
+    xNew = x - velocity * np.sin(theta) * tInterval
+    yNew = y + velocity * np.cos(theta) * tInterval
+    thetaNew = theta + (velocity / LENGTH) * np.tan(alpha) * tInterval
+    aVel = (velocity / LENGTH) * np.tan(alpha)
+    xVel = -1 * velocity * np.sin(theta)
+    yVel = velocity * np.cos(theta)
     return xNew, yNew, thetaNew, aVel, xVel, yVel
 
 
 # draws the figures
-def plotCharts(xCoordinate, yCoordinate, xPos, yPos, xVelocity, yVelocity, aVelocity, tList, deltaT):
+def plotCharts(xCoordinate, yCoordinate, xPos, yPos, xVelocity, yVelocity, errors, tList, deltaT):
     figure, ax = plt.subplots(2, 2, tight_layout=True, figsize=(6, 6))
     Drawing_uncolored_circle = plt.Circle((0, 0),
                                           2.5,
@@ -89,9 +98,9 @@ def plotCharts(xCoordinate, yCoordinate, xPos, yPos, xVelocity, yVelocity, aVelo
     ax[1, 0].set_title("Y Velocity over time")
 
     ax[1, 1].set_xlabel('t (seconds)')
-    ax[1, 1].set_ylabel('theta velocity (m/s)')
-    ax[1, 1].plot(tList, aVelocity)
-    ax[1, 1].set_title("Angular Velocity over time")
+    ax[1, 1].set_ylabel('position error (m)')
+    ax[1, 1].plot(tList, errors)
+    ax[1, 1].set_title("Error over Time")
 
     plt.show(block=False)
 

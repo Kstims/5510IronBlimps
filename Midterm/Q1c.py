@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
+
 plt.style.use('_mpl-gallery')
 
 
@@ -22,6 +23,7 @@ def runCommands(kList):
     RADIUS = 2.5
 
     time = 0
+    tickCounter = 0
     xNot = -2.5
     yNot = 0
     theta = 0
@@ -34,6 +36,7 @@ def runCommands(kList):
     # angVels = []
     times = []
     errors = []
+    compTimer = []
 
     for x in range(0, len(kList)):
         xNot, yNot, theta, angVel, xV, yV = kinematics(xNot, yNot, theta, kList[x][1], kList[0][0], VELOCITY)
@@ -44,9 +47,9 @@ def runCommands(kList):
         # angVels.append(angVel)
         time += kList[0][0]
         times.append(time)
-        actualRadians = (VELOCITY * time) / RADIUS;
-        actualX = RADIUS * -np.cos(actualRadians);
-        actualY = RADIUS * np.sin(actualRadians);
+        actualRadians = (VELOCITY * time) / RADIUS
+        actualX = RADIUS * -np.cos(actualRadians)
+        actualY = RADIUS * np.sin(actualRadians)
         error = np.sqrt(math.pow(xNot - actualX, 2) + math.pow(yNot - actualY, 2))
         errors.append(error)
         # print("Position: (" + str(xNot) + ", " + str(yNot) + ") theta = " + str(theta))
@@ -54,8 +57,10 @@ def runCommands(kList):
         # print("At T = " + str(time))
         xPoint.append(xNot)
         yPoint.append(yNot)
+        tickCounter += 1
+        compTimer.append(tickCounter)
 
-    plotCharts(xCoord, yCoord, xPoint, yPoint, xVels, yVels, errors, times, kList[0][0])
+    plotCharts(compTimer, xCoord, yCoord, xPoint, yPoint, xVels, yVels, errors, times, kList[0][0])
 
 
 # calculates position and velocities
@@ -72,7 +77,7 @@ def kinematics(x, y, theta, alpha, tInterval, velocity):
 
 
 # draws the figures
-def plotCharts(xCoordinate, yCoordinate, xPos, yPos, xVelocity, yVelocity, errors, tList, deltaT):
+def plotCharts(compTimer, xCoordinate, yCoordinate, xPos, yPos, xVelocity, yVelocity, errors, tList, deltaT):
     figure, ax = plt.subplots(2, 2, tight_layout=True, figsize=(6, 6))
     Drawing_uncolored_circle = plt.Circle((0, 0),
                                           2.5,
@@ -85,17 +90,17 @@ def plotCharts(xCoordinate, yCoordinate, xPos, yPos, xVelocity, yVelocity, error
         ax[0, 0].set(xlim=(-3, 3), ylim=(-3, 3))
 
     ax[0, 0].plot(xPos, yPos, linewidth=2, marker='.')
-    ax[0, 0].set_title("Question 1c: " + 'Delta: \u0394' + "t= " + str(deltaT))
+    ax[0, 0].set_title("Question 1c: " + 'Position \u0394' + "t= " + str(deltaT))
 
     ax[0, 1].set_xlabel('t (seconds)')
-    ax[0, 1].set_ylabel('x velocity (m/s)')
-    ax[0, 1].plot(tList, xVelocity)
-    ax[0, 1].set_title("X Velocity over time")
+    ax[0, 1].set_ylabel('computations')
+    ax[0, 1].plot(tList, compTimer)
+    ax[0, 1].set_title("Computations over time")
 
-    ax[1, 0].set_xlabel('t (seconds)')
-    ax[1, 0].set_ylabel('y velocity (m/s)')
-    ax[1, 0].plot(tList, yVelocity)
-    ax[1, 0].set_title("Y Velocity over time")
+    #ax[1, 0].set_xlabel('t (seconds)')
+    #ax[1, 0].set_ylabel('y velocity (m/s)')
+    #ax[1, 0].plot(tList, yVelocity)
+    #ax[1, 0].set_title("Y Velocity over time")
 
     ax[1, 1].set_xlabel('t (seconds)')
     ax[1, 1].set_ylabel('position error (m)')

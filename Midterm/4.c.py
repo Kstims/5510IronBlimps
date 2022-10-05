@@ -39,10 +39,14 @@ while True:
     theta += theta_dot * tau
     x_dot += curr_x_acc
     x += x_dot * tau
+
+    #comparing the new angle to the old angle
     if last_theta > theta:
+        #the angle decreased, increasing base angle by the amount of change
         print("Pushed Weight to middle from " + str(last_theta) + " to " + str(theta) + "("+str(last_theta-theta)+")" )
         theta = last_theta + (last_theta-theta)
     else:
+        #the angle decreased, pole still dropping at max force
         print("theta increased by " + str(theta-last_theta) + " test failed. Max recoverable angle is " +
               str(last_theta))
         break

@@ -10,7 +10,6 @@ plt.style.use('_mpl-gallery')
 def generateCommands(interval, turn):
     commandList = []
 
-    print("interval =" + str(interval))
     for x in range(int(10 / interval)):
         commandList.append((interval, turn))
 

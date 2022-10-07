@@ -2,7 +2,7 @@ import math
 
 
 def radToDegrees(theta):
-    return math.pi * theta / 180
+    return theta * 180/ math.pi
 
 
 def getForce(force, length, thetaVelocity, theta, massCart, massPole):

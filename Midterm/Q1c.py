@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import time as timer
 
 
 plt.style.use('_mpl-gallery')
@@ -18,11 +19,11 @@ def generateCommands(interval, turn):
 
 # Runs the list of commands to move the bot
 def runCommands(kList):
+    startTime = timer.time()
     VELOCITY = 8
     RADIUS = 2.5
 
     time = 0
-    tickCounter = 0
     xNot = -2.5
     yNot = 0
     theta = 0
@@ -56,8 +57,11 @@ def runCommands(kList):
         # print("At T = " + str(time))
         xPoint.append(xNot)
         yPoint.append(yNot)
-        tickCounter += 1
-        compTimer.append(tickCounter)
+        endTime = timer.time()
+        compTimer.append(endTime - startTime)
+
+    
+        
 
     plotCharts(compTimer, xCoord, yCoord, xPoint, yPoint, xVels, yVels, errors, times, kList[0][0])
 
@@ -91,10 +95,10 @@ def plotCharts(compTimer, xCoordinate, yCoordinate, xPos, yPos, xVelocity, yVelo
     ax[0, 0].plot(xPos, yPos, linewidth=2, marker='.')
     ax[0, 0].set_title("Question 1c: " + 'Position \u0394' + "t= " + str(deltaT))
 
-    ax[0, 1].set_xlabel('t (seconds)')
-    ax[0, 1].set_ylabel('computations')
+    ax[0, 1].set_xlabel('Simulation Time (s)')
+    ax[0, 1].set_ylabel('Total Computational Time (s)')
     ax[0, 1].plot(tList, compTimer)
-    ax[0, 1].set_title("Computations over time")
+    ax[0, 1].set_title("Computational Time")
 
     #ax[1, 0].set_xlabel('t (seconds)')
     #ax[1, 0].set_ylabel('y velocity (m/s)')

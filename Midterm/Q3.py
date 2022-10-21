@@ -29,17 +29,14 @@ print("Start x, y, z: {:.2f}, {:.2f}, {:.2f}".format(x,y,z))
 
 def dist(x1, x2, y1, y2):
     return sqrt((x2-x1)**2 + (y2-y1)**2)
-    
-def radToDeg(x):
-    return 
 
 for i in range(n):
     t1_diff = (random.random()) * max_float
     t4_diff = (random.random()) * max_float
     t5_diff = (random.random()) * max_float
     t1_tmp = t1 + t1_diff
-    t4_tmp = t4
-    t5_tmp = t5
+    t4_tmp = t4 + t4_diff
+    t5_tmp = t5 + t5_diff
     
     x_tmp = (cos(t1_tmp) * cos(t4_tmp) * sin(t5_tmp) * d6) - (sin(t1_tmp) * cos(t5_tmp) * d6) - (sin(t1_tmp) * d3)
     y_tmp = (sin(t1_tmp) * cos(t4_tmp) * sin(t5_tmp) * d6) + (cos(t1_tmp) * cos(t5_tmp) * d6) + (cos(t1_tmp) * d3)
@@ -50,7 +47,7 @@ for i in range(n):
     if abs(x - x_goal) < threshold and abs(y - y_goal) < threshold:
         print("success")
         print("Final XYZ {} {} {}".format(x,y,z))
-        print("Final thetas {} {} {}".format(t1_temp, t4_temp, t5_temp))
+        print("Final thetas {} {} {}".format(t1_tmp, t4_tmp, t5_tmp))
         print("num iter {}".format(i))
         break
         

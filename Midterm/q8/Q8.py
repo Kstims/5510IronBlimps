@@ -1,4 +1,4 @@
-from keras.models import load_model
+import tensorflow as tf
 from keras_preprocessing.image import load_img
 from keras_preprocessing.image import img_to_array
 from keras.applications.vgg16 import preprocess_input
@@ -6,9 +6,8 @@ from keras.applications.vgg16 import decode_predictions
 from keras.applications.vgg16 import VGG16
 import numpy as np
 
-from keras.models import load_model
 
-model = load_model('model_saved.h5')
+model = tf.keras.models.load_model('model_saved.h5')
 
 
 for file in 'test':

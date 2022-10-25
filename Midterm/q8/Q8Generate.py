@@ -1,24 +1,9 @@
-import keras_preprocessing
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras import backend as K
-from keras.models import load_model
-from keras_preprocessing.image import load_img
-import os
-import PIL
-import PIL.Image
-import tensorflow as tf
-#import tensorflow_datasets as tfds
-from keras_preprocessing.image import img_to_array
-from keras.applications.vgg16 import preprocess_input
-from keras.applications.vgg16 import decode_predictions
-from keras.applications.vgg16 import VGG16
-import numpy as np
 
-
-import numpy as np
 
 
 train_data_dir = 'train'
@@ -26,7 +11,7 @@ validation_data_dir = 'test'
 nb_train_samples = 1300
 nb_validation_samples = 10
 epochs = 10
-batch_size = 16
+batch_size = 10
 img_width, img_height = 512, 512
 
 if K.image_data_format() == 'channels_first':

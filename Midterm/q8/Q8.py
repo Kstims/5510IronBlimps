@@ -1,21 +1,22 @@
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt # for plotting
-    import numpy as np # for transformation
+    import matplotlib.pyplot as plt  # for plotting
+    import numpy as np  # for transformation
 
-    import torch # PyTorch package
-    import torchvision # load datasets
-    import torchvision.transforms as transforms # transform data
-    import torch.nn as nn # basic building block for neural neteorks
-    import torch.nn.functional as F # import convolution functions like Relu
-    import torch.optim as optim # optimzer
+    import torch  # PyTorch package
+    import torchvision  # load datasets
+    import torchvision.transforms as transforms  # transform data
+    import torch.nn as nn  # basic building block for neural neteorks
+    import torch.nn.functional as F  # import convolution functions like Relu
+    import torch.optim as optim  # optimzer
     import time
 
-    transform = transforms.Compose( # composing several transforms together
-        [transforms.ToTensor(), # to tensor object
-         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]) # mean = 0.5, std = 0.5
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    transform = transforms.Compose(  # composing several transforms together
+        [transforms.ToTensor(),  # to tensor object
+         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])  # mean = 0.5, std = 0.5
 
     # set batch_size
-    batch_size = 4
+    batch_size = 10
 
     # set number of workers
     num_workers = 2
@@ -32,12 +33,34 @@ if __name__ == '__main__':
     classes = ('crop', 'weed')
 
 
-    def imshow(img):
-      ''' function to show image '''
-      img = img / 2 + 0.5 # unnormalize
-      npimg = img.numpy() # convert to numpy objects
-      plt.imshow(np.transpose(npimg, (1, 2, 0)))
-      plt.show()
+    def imshow(img, true, pred):
+        ''' function to show image '''
+        trueTop = []
+        trueBottom = []
+        predTop = []
+        predBottom = []
+        i = 0
+        for x in true:
+            if(i < 5):
+                trueTop.append(x)
+            else:
+                trueBottom.append(x)
+            i+=1
+        i=0
+        for x in pred:
+            if(i < 5):
+                predTop.append(x)
+            else:
+                predBottom.append(x)
+            i+=1
+
+        title = "Actual: " + str(trueTop) + "\n           " + str(trueBottom) + "\n\nPrdct : " + str(predTop) + "\n           " + str(predBottom)
+        img = img / 2 + 0.5  # unnormalize
+        npimg = img.numpy()  # convert to numpy objects
+        plt.imshow(np.transpose(npimg, (1, 2, 0)))
+        plt.title(title)
+        plt.show()
+
 
     class Net(nn.Module):
         ''' Models a simple Convolutional Neural Network'''
@@ -57,33 +80,35 @@ if __name__ == '__main__':
 
         def forward(self, x):
             ''' the forward propagation algorithm '''
-            #print('x_shape:', x.shape)
+            # print('x_shape:', x.shape)
             x = self.pool(F.relu(self.conv1(x)))
-            #print('x_shape:', x.shape)
+            # print('x_shape:', x.shape)
             x = self.pool(F.relu(self.conv2(x)))
-            #print('x_shape:', x.shape)
+            # print('x_shape:', x.shape)
             x = x.view(-1, 16 * 125 * 125)
-            #print('x_shape:', x.shape)
-            x = F.relu(self.fc1(x)) #breaks here
-            #print('x_shape:', x.shape)
+            # print('x_shape:', x.shape)
+            x = F.relu(self.fc1(x))  # breaks here
+            # print('x_shape:', x.shape)
             x = F.relu(self.fc2(x))
-            #print('x_shape:', x.shape)
+            # print('x_shape:', x.shape)
             x = self.fc3(x)
-            #print('x_shape:', x.shape)
+            # print('x_shape:', x.shape)
             return x
 
 
     net = Net()
     print(net)
 
-
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-    #start = torch.cuda.Event(enable_timing=True)
-    #end = torch.cuda.Event(enable_timing=True)
+    if torch.cuda.is_available():
+        start = torch.cuda.Event(enable_timing=True)
+        end = torch.cuda.Event(enable_timing=True)
+        start.record()
+    else:
+        start = time.time()
 
-    #start.record()
     printHeader = False
     for epoch in range(2):  # loop over the dataset multiple times
 
@@ -104,44 +129,53 @@ if __name__ == '__main__':
             # print statistics
             running_loss += loss.item()
 
-            if i % 64 == 63:
+            if i % 20 == 19:
                 if not printHeader:
                     printHeader = True
-                    print("[Epoch, Idx]")
+                    print("[Epoch, Batch]")
                 # print every 64 mini-batches
-                print('[%d,   %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 64))
+                print('[%d,     %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 64))
                 running_loss = 0.0
 
     # whatever you are timing goes here
-    #end.record()
+    if torch.cuda.is_available():
+        end.record()
 
-    # Waits for everything to finish running
-    torch.cuda.synchronize()
+        # Waits for everything to finish running
+        torch.cuda.synchronize()
+        endTime = start.elapsed_time(end.record())
+    else:
+        endTime = time.time() - start
 
     print('Finished Training')
-    #print(start.elapsed_time(end))  # milliseconds
+    print(endTime)  # milliseconds
 
     # save
     PATH = './CropWeedModel.pth'
     torch.save(net.state_dict(), PATH)
     # reload
-    #net = Net()
-    #net.load_state_dict(torch.load(PATH))
-
+    # net = Net()
+    # net.load_state_dict(torch.load(PATH))
 
     dataiter = iter(testloader)
     images, labels = dataiter.next()
 
     # print images
 
-    print('True result: ', ' '.join('%s' % classes[labels[j]] for j in range(4)))
+    print('True result: ', ' '.join('%s' % classes[labels[j]] for j in range(10)))
 
     outputs = net(images)
 
     _, predicted = torch.max(outputs, 1)
 
-    print('Predicted: ', ' '.join('%s' % classes[predicted[j]] for j in range(4)))
-    imshow(torchvision.utils.make_grid(images))
+    print('Predicted: ', ' '.join('%s' % classes[predicted[j]] for j in range(10)))
+    labelTrue = []
+    labelPred = []
+    for i in range(10):
+        labelTrue.append(classes[labels[i]])
+        labelPred.append(classes[predicted[i]])
+
+    imshow(torchvision.utils.make_grid(images, nrow=5), labelTrue, labelPred)
 
     correct = 0
     total = 0

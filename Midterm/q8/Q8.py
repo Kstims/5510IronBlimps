@@ -80,10 +80,10 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-    start = torch.cuda.Event(enable_timing=True)
-    end = torch.cuda.Event(enable_timing=True)
+    #start = torch.cuda.Event(enable_timing=True)
+    #end = torch.cuda.Event(enable_timing=True)
 
-    start.record()
+    #start.record()
     printHeader = False
     for epoch in range(2):  # loop over the dataset multiple times
 
@@ -113,7 +113,7 @@ if __name__ == '__main__':
                 running_loss = 0.0
 
     # whatever you are timing goes here
-    end.record()
+    #end.record()
 
     # Waits for everything to finish running
     torch.cuda.synchronize()

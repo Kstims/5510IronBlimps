@@ -1,0 +1,6 @@
+classes=2
+train=data/crop-and-weed/train.txt
+valid=data/crop-and-weed/val.txt
+names=config/q8.names
+backup=backup/
+

@@ -32,6 +32,9 @@ Requirements stored in `requirements.txt` in each folder (if applicable).
 - Question 7
   - part a - Q7/Q7.md and Q7/Q7.py (other models are called their respective names)
 - Question 8
+  - part a - Q8/Q8a.py
+  - part b - Q8/Q8b.py
+  - part c - Q8/Q8c.py
 - Question 9
   - parts a-d - Q9/Q9.md
 

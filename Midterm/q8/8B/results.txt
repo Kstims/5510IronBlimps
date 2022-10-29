@@ -1,0 +1,7 @@
+The YOLO algorithm was extremely fast, much faster than running the CNN.
+Upon testing, I was able to conduct dozens of epochs in the same timespan as it took me to run several on the CNN.
+
+The CNN took a two stage approach to analyzing images, first detecting objects of interest within a given frame
+And then moving through a second time to analyze each object and determine its identity.
+
+On the other hand, Yolo passes through the image once to detect an object and analyze it at the same time.

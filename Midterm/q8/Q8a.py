@@ -106,8 +106,7 @@ if __name__ == '__main__':
         start = torch.cuda.Event(enable_timing=True)
         end = torch.cuda.Event(enable_timing=True)
         start.record()
-    else:
-        start = time.time()
+    startTime = time.time()
 
     printHeader = False
     for epoch in range(2):  # loop over the dataset multiple times
@@ -139,16 +138,11 @@ if __name__ == '__main__':
 
     # whatever you are timing goes here
     if torch.cuda.is_available():
-        end.record()
-
         # Waits for everything to finish running
         torch.cuda.synchronize()
-        endTime = start.elapsed_time(end.record())
-    else:
-        endTime = time.time() - start
-
     print('Finished Training')
-    print(endTime)  # milliseconds
+    endTime = time.time() - startTime
+    print(str(endTime) + "seconds")
 
     # save
     PATH = './CropWeedModel.pth'

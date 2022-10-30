@@ -51,7 +51,7 @@ Requirements stored in `requirements.txt` in each folder (if applicable).
   - part a - Q8/8A/Q8a.py
     - Run `Q8/8A/Q8a.py`
   - part b - Q8/8B/
-    - From within Q8 run `python Q8/8B/yolov5/train.py --batch 16 --epochs 5 --data dataset.yaml --weights '' --cfg yolov5s.yaml`
+    - From within 8B run `python yolov5/train.py --batch 16 --epochs 5 --data dataset.yaml --weights '' --cfg yolov5s.yaml`
       - Edit the batch size, number of epochs, and add a `--workers <x>` argument depending on hardware specs and desired time to run.
     - Results will be displayed in terminal, additionally, graphics will be placed in `Q8/8B/yolo5/runs/train/exp<x>`.
     - The highest value after (exp) will be the most recent data to use.
@@ -59,7 +59,7 @@ Requirements stored in `requirements.txt` in each folder (if applicable).
     - Additionally, view training graphically by running `tensorboard --logdir yolov5/runs/` from a different shell session and accessing `localhost:6006` in a web browser.
     - Text result of findings is found in `results.txt`
   - part c -Q8/8C
-    - From within Q8 run `python Q8/8C/yolov5/train.py --data cats_and_dogs.yaml --weights yolov5s.pt --epochs 5 --batch 16 --freeze 10`
+    - From within 8C run `python yolov5/train.py --data cats_and_dogs.yaml --weights yolov5s.pt --epochs 5 --batch 16 --freeze 10`
       - As before, edit the arguments according to system specifications
 - Question 9
   - parts a-d - Q9/Q9.md

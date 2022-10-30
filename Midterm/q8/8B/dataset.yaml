@@ -1,8 +1,11 @@
-path: ../datasets/data  # dataset root dir
-train: images  # train images (relative to 'path') 128 images
-val: images  # val images (relative to 'path') 128 images
-test:  # test images (optional)
+# Dataset paths relative to the yolov5 folder
+train: ../data/images/train
+val:   ../data/images/val
+test:  ../data/images/test
 
-names:
-  0: crop
-  1: weed
+
+# Number of classes
+nc: 2
+
+# Class names 0 - crop, 1 - weed
+names: ['crop', 'weed']

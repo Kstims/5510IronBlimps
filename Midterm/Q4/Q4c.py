@@ -56,8 +56,7 @@ while True:
         xVelocity = 0
         x = 0
 
-
-    else:
+    if theta > 1.57:
         # the angle decreased, pole still dropping at max force
         print("theta increased by " + str(theta - last_theta) + " test failed. Max recoverable angle is " +
               str(last_theta))

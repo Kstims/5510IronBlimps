@@ -71,20 +71,16 @@ def trackFace(myDrone, info, w, h, pid, pError):
     fbRange = [3200, 6800]
     area = info[1]
     x, y = info[0]
-    print("x: " + str(x))
-    print("y: " + str(y))
-    print("pid[0]: " + str(pid[0]))
-    print("pid[1]: " + str(pid[1]))
 
     fb = 0
     error = x - w // 2
-    errorHeight = y + h //2
-    print("errorHeight: " + str(errorHeight))
+    errorHeight = y - h //2
+
     rotationSpeed = pid[0] * error + pid[1] * (error - pError)
     rotationSpeed = int(np.clip(rotationSpeed, -100, 100))
-    heightSpeed = pid[0] * error + pid[1] * (errorHeight - pError)
-    heightSpeed = int(np.clip(heightSpeed, -20, 20))
-    print("heightSpeed: " + str(heightSpeed))
+    heightSpeed = pid[0] * errorHeight + pid[1] * (errorHeight - pError)
+    heightSpeed = -1* int(np.clip(heightSpeed, -20, 20))
+
 
     if area > fbRange[0] and area < fbRange[1]:
         fb = 0
@@ -98,6 +94,10 @@ def trackFace(myDrone, info, w, h, pid, pError):
         error = 0
     # print(speed, fb)
     #myDrone.send_rc_control(0, fb, 0, rotationSpeed)
+    print("x: " + str(x))
+    print("y: " + str(y))
+    print("errorHeight: " + str(errorHeight))
+    print("heightSpeed: " + str(heightSpeed))
     myDrone.send_rc_control(0, fb, heightSpeed, rotationSpeed)
     return error
 

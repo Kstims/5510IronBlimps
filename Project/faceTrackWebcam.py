@@ -118,7 +118,7 @@ pid = [0.4, 0.4, 0]
 pError = 0
 #tracker_types = ['MIL', 'KCF', 'CSRT']
 tracker_type = "CRST"
-tracker = cv2.TrackerCSRT_create()
+tracker = cv2.legacy.TrackerCSRT_create()
 makeBox = True
 fail_count = 0
 

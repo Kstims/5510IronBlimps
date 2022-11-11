@@ -27,7 +27,7 @@ def telloGetFrame(myDrone, w, h):
 
 def findFace(img):
     # Loads haar cascade from cv2 to detect objects
-    haar = False
+    haar = True
     if (haar):
         faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
         profileCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_profileface.xml")

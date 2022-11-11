@@ -11,9 +11,9 @@ myDrone = ftu.intializeTello()
 print("Battery level: " + str(myDrone.get_battery()))
 myDrone.streamon()
 time.sleep(5)
-if (droneFly):
+if droneFly:
     myDrone.takeoff()
-# myDrone.send_rc_control(0, 0, 20, 0)
+#myDrone.send_rc_control(0, 0, 20, 0)
 # time.sleep(10)
 # myDrone.send_rc_control(0, 0, 0, 0)
 # time.sleep(2.2)
@@ -21,7 +21,7 @@ w, h = 480, 360
 pid = [0.4, 0.4, 0]
 pError = 0
 
-tracker = cv2.legacy.TrackerCSRT_create()
+tracker = cv2.TrackerCSRT_create()
 makeBox = True
 fail_count = 0
 
@@ -46,9 +46,22 @@ while True:
             ok = tracker.init(img, bbox)
             makeBox = False
             fail_count = 0
+            print("face coord: ", bbox)
 
     # Update tracker
+    timer = cv2.getTickCount()
+    x0, y0, w0, h0 = bbox
+    prior_x = x0 + w0//2
+    prior_y = y0 + h0//2
     ok, bbox = tracker.update(img)
+    x1, y1, w1, h1 = bbox
+    next_x = x1 + w1 // 2
+    next_y = y1 + h1 // 2
+    box_diff = math.sqrt((x1-x0)**2 + (y1-y0)**2)
+    if box_diff > 30:
+        ok = False
+        makeBox = True
+    fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
 
     # tracts face coordinates in frame to determine movement
     if ok:
@@ -64,7 +77,7 @@ while True:
         cy = y1 + height // 2
         area = width * height
         info = [[cx, cy], area]
-        print("P Error", ftu.trackFace(myDrone, info, w, h, pid, pError))
+        ftu.trackFace(myDrone, info, w, h, pid, pError)
     else:
         # Tracking failure
         fail_count += 1
@@ -74,7 +87,7 @@ while True:
 
     # Display tracker type and fps on img
     cv2.putText(img, "CSRT Tracker", (100, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2)
-    #cv2.putText(img, "FPS : " + str(int(fps)), (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2)
+    cv2.putText(img, "FPS : " + str(int(fps)), (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2)
 
     # print("Center", info[0], "Area", info[1])
     # displays image
@@ -84,7 +97,7 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         cv2.destroyAllWindows()
         myDrone.streamoff()
-        if (droneFly):
+        if droneFly:
             myDrone.land()
         myDrone.end()
         print("Drone disengaged")

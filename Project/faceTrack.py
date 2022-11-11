@@ -6,14 +6,14 @@ import math
 
 
 # Makes connection between drone and computer, activates camera, and lifts off
-droneFly = False
+droneFly = True
 myDrone = ftu.intializeTello()
 print("Battery level: " + str(myDrone.get_battery()))
 myDrone.streamon()
 time.sleep(5)
 if droneFly:
     myDrone.takeoff()
-#myDrone.send_rc_control(0, 0, 20, 0)
+myDrone.send_rc_control(0, 0, 10, 0)
 # time.sleep(10)
 # myDrone.send_rc_control(0, 0, 0, 0)
 # time.sleep(2.2)
@@ -23,7 +23,11 @@ pError = 0
 
 tracker = cv2.TrackerCSRT_create()
 makeBox = True
+boxMade = False
 fail_count = 0
+bbox = None
+ok = None
+fps =0
 
 # Main loop
 while True:
@@ -36,35 +40,44 @@ while True:
     # detects face in frame
 
     if makeBox:
+        myDrone.get_battery()
         face_frame, info = ftu.findFace(img)
         # Create bounding box
         if info[1] != 0:
             side = int(math.sqrt(info[1]))
             x, y = info[0]
+            print("here")
             bbox = (int(x-(side/2)), int(y-(side/2)), side, side)
             # Initialize tracker with first frame and bounding box
             ok = tracker.init(img, bbox)
             makeBox = False
             fail_count = 0
             print("face coord: ", bbox)
+            boxMade = True
 
     # Update tracker
-    timer = cv2.getTickCount()
-    x0, y0, w0, h0 = bbox
-    prior_x = x0 + w0//2
-    prior_y = y0 + h0//2
-    ok, bbox = tracker.update(img)
-    x1, y1, w1, h1 = bbox
-    next_x = x1 + w1 // 2
-    next_y = y1 + h1 // 2
-    box_diff = math.sqrt((x1-x0)**2 + (y1-y0)**2)
-    if box_diff > 30:
-        ok = False
-        makeBox = True
-    fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
+    if bbox is not None:
+        timer = cv2.getTickCount()
+        x0, y0, w0, h0 = bbox
+        prior_x = x0 + w0//2
+        prior_y = y0 + h0//2
+        area1 = w0*h0
+        ok, bbox = tracker.update(img)
+        x1, y1, w1, h1 = bbox
+        next_x = x1 + w1 // 2
+        next_y = y1 + h1 // 2
+        area2 = w1*h1
+        box_diff = math.sqrt((x1-x0)**2 + (y1-y0)**2)
+        print("areas: ", area1, area2)
+        print("diff: ", box_diff)
+        if not boxMade and box_diff > 100 or 0.6 < (area1 / area2) < 1.4:
+            ok = False
+            makeBox = True
+            boxMade = False
+        fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
 
     # tracts face coordinates in frame to determine movement
-    if ok:
+    if ok is not None and ok:
         p1 = (int(bbox[0]), int(bbox[1]))
         p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
         cv2.rectangle(img, p1, p2, (255, 0, 0), 2, 1)

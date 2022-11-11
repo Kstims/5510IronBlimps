@@ -27,7 +27,7 @@ boxMade = False
 fail_count = 0
 bbox = None
 ok = None
-fps =0
+fps = 0
 
 # Main loop
 while True:
@@ -41,12 +41,11 @@ while True:
 
     if makeBox:
         myDrone.get_battery()
-        face_frame, info = ftu.findFace(img)
+        img, info = ftu.findFace(img)
         # Create bounding box
         if info[1] != 0:
             side = int(math.sqrt(info[1]))
             x, y = info[0]
-            print("here")
             bbox = (int(x-(side/2)), int(y-(side/2)), side, side)
             # Initialize tracker with first frame and bounding box
             ok = tracker.init(img, bbox)
@@ -70,7 +69,7 @@ while True:
         box_diff = math.sqrt((x1-x0)**2 + (y1-y0)**2)
         print("areas: ", area1, area2)
         print("diff: ", box_diff)
-        if not boxMade and box_diff > 100 or 0.6 < (area1 / area2) < 1.4:
+        if not boxMade and (box_diff > 40 or 0.9 < (area1/area2) < 1.1):
             ok = False
             makeBox = True
             boxMade = False

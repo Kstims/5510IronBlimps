@@ -107,7 +107,7 @@ def trackFace(myDrone, info, w, h, pid, pError):
 
     # gets the required rotation speed to keep drone centered on target
     rotationSpeed = pid[0] * error + pid[1] * (error - pError)
-    rotationSpeed = int(np.clip(rotationSpeed, -75, 75))
+    rotationSpeed = int(np.clip(rotationSpeed, -50, 50))
     # gets required vertical speed to keep drone centered on target
     heightSpeed = pid[0] * errorHeight + pid[1] * (errorHeight - pError)
     heightSpeed = -1 * int(np.clip(heightSpeed, -20, 20))

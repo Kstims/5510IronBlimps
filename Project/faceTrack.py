@@ -6,17 +6,17 @@ import math
 
 
 # Makes connection between drone and computer, activates camera, and lifts off
-droneFly = False
+droneFly = True
 myDrone = ftu.intializeTello()
 print("Battery level: " + str(myDrone.get_battery()))
 myDrone.streamon()
 time.sleep(5)
 if droneFly:
     myDrone.takeoff()
-#myDrone.send_rc_control(0, 0, 10, 0)
-# time.sleep(10)
-# myDrone.send_rc_control(0, 0, 0, 0)
-# time.sleep(2.2)
+myDrone.send_rc_control(0, 0, 10, 0)
+time.sleep(10)
+myDrone.send_rc_control(0, 0, 0, 0)
+time.sleep(2.2)
 w, h = 480, 360
 pid = [0.4, 0.4, 0]
 pError = 0
@@ -39,21 +39,26 @@ while True:
     img = cv2.resize(img, (w, h))
     # detects face in frame
 
+    myDrone.get_battery()
+    img, info = ftu.findFace(img)
+    # Create bounding box
+    # makeBox = True
     if makeBox:
-        myDrone.get_battery()
-        img, info = ftu.findFace(img)
-        # Create bounding box
         if info[1] != 0:
             side = int(math.sqrt(info[1]))
             x, y = info[0]
             bbox = (int(x-(side/2)), int(y-(side/2)), side, side)
+            _, _, w1, h1 = bbox
+            ratio = w1/h1
             # Initialize tracker with first frame and bounding box
+            tracker = cv2.legacy.TrackerMOSSE_create()
             ok = tracker.init(img, bbox)
             makeBox = False
             fail_count = 0
             boxMade = True
+   
 
-    # Update tracker
+    #Update tracker
     if bbox is not None:
         timer = cv2.getTickCount()
         x0, y0, w0, h0 = bbox
@@ -62,16 +67,27 @@ while True:
         area1 = w0*h0
         ok, bbox = tracker.update(img)
         x1, y1, w1, h1 = bbox
+        
         next_x = x1 + w1 // 2
         next_y = y1 + h1 // 2
         area2 = w1*h1
         box_diff = math.sqrt((x1-x0)**2 + (y1-y0)**2)
-        if not boxMade and (box_diff > 40 or 0.9 < (area1/area2) < 1.1):
+        # if not boxMade and (box_diff > 40 or 0.9 < (area1/area2) < 1.1):
+        #     ok = False
+        #     makeBox = True
+        #     boxMade = False
+        if h1 == 0 or w1/h1 > ratio * 1.25 or w1/h1 < ratio / 1.25:
             ok = False
             makeBox = True
             boxMade = False
         fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
 
+    if info[1] != 0:
+        x, y = info[0]
+        faceBBox = (int(x-(side/2)), int(y-(side/2)), side, side)
+        p1 = (int(faceBBox[0]), int(faceBBox[1]))
+        p2 = (int(faceBBox[0] + faceBBox[2]), int(faceBBox[1] + faceBBox[3]))
+        cv2.rectangle(img, p1, p2, (0, 255, 0), 2, 1)
     # tracts face coordinates in frame to determine movement
     if ok is not None and ok:
         p1 = (int(bbox[0]), int(bbox[1]))
@@ -108,6 +124,4 @@ while True:
         myDrone.streamoff()
         if droneFly:
             myDrone.land()
-        myDrone.end()
-        print("Drone disengaged")
         break

@@ -6,14 +6,14 @@ import math
 
 
 # Makes connection between drone and computer, activates camera, and lifts off
-droneFly = True
+droneFly = False
 myDrone = ftu.intializeTello()
 print("Battery level: " + str(myDrone.get_battery()))
 myDrone.streamon()
 time.sleep(5)
 if droneFly:
     myDrone.takeoff()
-myDrone.send_rc_control(0, 0, 10, 0)
+#myDrone.send_rc_control(0, 0, 10, 0)
 # time.sleep(10)
 # myDrone.send_rc_control(0, 0, 0, 0)
 # time.sleep(2.2)
@@ -21,7 +21,7 @@ w, h = 480, 360
 pid = [0.4, 0.4, 0]
 pError = 0
 
-tracker = cv2.TrackerCSRT_create()
+tracker = cv2.legacy.TrackerMOSSE_create()
 makeBox = True
 boxMade = False
 fail_count = 0
@@ -51,7 +51,6 @@ while True:
             ok = tracker.init(img, bbox)
             makeBox = False
             fail_count = 0
-            print("face coord: ", bbox)
             boxMade = True
 
     # Update tracker
@@ -67,8 +66,6 @@ while True:
         next_y = y1 + h1 // 2
         area2 = w1*h1
         box_diff = math.sqrt((x1-x0)**2 + (y1-y0)**2)
-        print("areas: ", area1, area2)
-        print("diff: ", box_diff)
         if not boxMade and (box_diff > 40 or 0.9 < (area1/area2) < 1.1):
             ok = False
             makeBox = True

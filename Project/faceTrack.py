@@ -67,6 +67,14 @@ while True:
         area1 = w0*h0
         ok, bbox = tracker.update(img)
         x1, y1, w1, h1 = bbox
+        if info[1] != 0:
+            side = int(math.sqrt(info[1]))
+            faceX, faceY = info[0]
+            faceBbox = (int(faceX-(side/2)), int(faceY-(side/2)), side, side)
+            if faceX > x1 and faceX < x1 + w1 and faceY > y1 and faceY < y1 + h1:
+                tracker = cv2.legacy.TrackerMOSSE_create()
+                ok = tracker.init(img, bbox)
+        
         
         next_x = x1 + w1 // 2
         next_y = y1 + h1 // 2

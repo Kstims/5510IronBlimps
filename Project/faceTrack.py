@@ -102,7 +102,7 @@ while True:
         cy = y1 + height // 2
         area = width * height
         info = [[cx, cy], area]
-        ftu.trackFace(myDrone, info, w, h, pid, pError)
+        pError = ftu.trackFace(myDrone, info, w, h, pid, pError)
     else:
         # Tracking failure
         fail_count += 1

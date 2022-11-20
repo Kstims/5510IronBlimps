@@ -149,3 +149,21 @@ def getKey(keyName):
         ans = True
     pygame.display.update()
     return ans
+
+
+def drawRectangle(img, bbox, color):
+    p1 = (int(bbox[0]), int(bbox[1]))
+    p2 = (int(bbox[0] + int(bbox[2])), int(bbox[1] + bbox[3]))
+    cv2.rectangle(img, p1, p2, color, 2, 1)
+    return p1, p2
+
+
+def coordFromBox(bbox):
+    x1, y1 = (int(bbox[0]), int(bbox[1]))
+    x2, y2 = (int(bbox[0] + int(bbox[2])), int(bbox[1] + bbox[3]))
+    width, height = x2 - x1, y2 - y1
+    cx = x1 + width // 2
+    cy = y1 + height // 2
+    area = width * height
+    info = [[cx, cy], area]
+    return info

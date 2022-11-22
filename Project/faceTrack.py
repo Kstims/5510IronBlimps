@@ -10,17 +10,13 @@ droneFly = True
 myDrone = ftu.intializeTello()
 print("Battery level: " + str(myDrone.get_battery()))
 myDrone.streamon()
-time.sleep(5)
 if droneFly:
     myDrone.takeoff()
+time.sleep(3)
 myDrone.send_rc_control(0, 0, 10, 0)
-time.sleep(10)
-myDrone.send_rc_control(0, 0, 0, 0)
-time.sleep(2.2)
 w, h = 480, 360
 pid = [0.4, 0.4, 0]
 pError = 0
-
 newTracker = True
 fail_count = 0
 bbox = None
@@ -33,7 +29,7 @@ while True:
 
     # Resizes image to set width/height
     img = cv2.resize(img, (w, h))
-    myDrone.get_battery()
+    #myDrone.get_battery()
 
     # Detects face in frame
     img, info = ftu.findFace(img)

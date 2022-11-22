@@ -43,14 +43,13 @@ def findFace(img):
     profilesRight = profileCascade.detectMultiScale(imgGray, 1.2, 8)
     bodies = bodyCascade.detectMultiScale(imgGray, 1.1, 3)
 
-
     # stores current faces into arrays
     myFaceListCFace, myFaceListAreaFace = generateObjList(faces, img)
     myFaceListCProfileLeft, myFaceListAreaProfileLeft = generateObjList(profilesLeft, img)
     myFaceListCProfileRight, myFaceListAreaProfileRight = generateObjList(profilesRight, img)
     myFaceListCBody, myFaceListAreaBody = generateObjList(bodies, img)
-    # generates rectangle and center dot around each detected face
 
+    # generates rectangle and center dot around each detected face
     myFaceListC = myFaceListCFace + myFaceListCProfileLeft + myFaceListCProfileRight + myFaceListCBody
     myFaceListArea = myFaceListAreaFace + myFaceListAreaProfileLeft + myFaceListAreaProfileRight + myFaceListAreaBody
     if len(myFaceListArea) != 0:
@@ -58,7 +57,7 @@ def findFace(img):
         index = 0
         distance = None
         j = 0
-        #obtain item closest to center of screen
+        # Obtain item closest to center of screen
         for item in myFaceListC:
             x, y = item
             if distance is None:
@@ -75,7 +74,6 @@ def findFace(img):
 
 
 # takes the drone connect data, the face info, frame width and height. PID, and error range
-
 def generateObjList(object, img):
     myFaceListC = []
     myFaceListArea = []
@@ -91,7 +89,7 @@ def generateObjList(object, img):
 
 
 def trackFace(myDrone, info, w, h, pid, pError):
-    # info contains the coordinates of of the centermost face
+    # info contains the coordinates of the centermost face
     # range of distance to control drone moving forward/away from target
     fbRange = [3200, 6800]
     # area of the face square
@@ -113,12 +111,14 @@ def trackFace(myDrone, info, w, h, pid, pError):
     heightSpeed = -1 * int(np.clip(heightSpeed, -20, 20))
 
     # determines if target is too far or close to the drone. Moves closer/away if needed.
-    if area > fbRange[0] and area < fbRange[1]:
+    if fbRange[0] < area < fbRange[1]:
         fb = 0
     elif area > fbRange[1]:
         fb = -20
+        fb = int(fb * (area / fbRange[1] - 1))
     elif area < fbRange[0] and area != 0:
         fb = 20
+        fb = int(fb * (fbRange[0] / area - 1))
     if x == 0:
         rotationSpeed = 0
         heightSpeed = 0
@@ -130,7 +130,7 @@ def trackFace(myDrone, info, w, h, pid, pError):
         print("y: " + str(y))
         print("errorHeight: " + str(errorHeight))
         print("heightSpeed: " + str(heightSpeed))
-    # sends movement commands to keep target cenetered
+    # sends movement commands to keep target centered
     myDrone.send_rc_control(0, fb, heightSpeed, rotationSpeed)
     return error
 

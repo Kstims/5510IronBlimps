@@ -23,8 +23,9 @@ def Discrete(state, bins):
 
 
 # Run an example of using cartpole model for 1000 steps.
+current_state = Discrete(env.reset()[0], bins)
 for _ in range(1000):
-    current_state = Discrete(env.reset()[0], bins)
+    current_state = Discrete(observation, bins)
     action = np.argmax(q_table[current_state])
     observation, reward, terminated, truncated, info = env.step(action)
     env.render()

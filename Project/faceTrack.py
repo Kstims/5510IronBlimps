@@ -4,7 +4,6 @@ import faceTrackUtil as ftu
 import time
 import math
 
-
 # Makes connection between drone and computer, activates camera, and lifts off
 droneFly = True
 myDrone = ftu.intializeTello()
@@ -21,6 +20,7 @@ newTracker = True
 fail_count = 0
 bbox = None
 ok = None
+result = cv2.VideoWriter('Drone Feed.avi', cv2.VideoWriter_fourcc(*'MJPG'), 10, (w, h))
 
 # Main loop
 while True:
@@ -80,10 +80,12 @@ while True:
         # cv2.putText(img, "Tracking failure detected", (100, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
 
     # Display image
+    result.write(img)
     cv2.imshow("Output", img)
 
     # press 'q' to land drone and shutdown
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        result.release()
         cv2.destroyAllWindows()
         myDrone.streamoff()
         if droneFly:

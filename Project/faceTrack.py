@@ -22,11 +22,21 @@ bbox = None
 ok = None
 result = cv2.VideoWriter('Drone Feed.avi', cv2.VideoWriter_fourcc(*'MJPG'), 10, (w, h))
 
+tickTime = time.time()
+numTicks = 0
+
+outputVideo = None
+
 # Main loop
 while True:
     # Receives image from camera feed
     img = myDrone.get_frame_read().frame
 
+    currentTime = time.time()
+    if currentTime - tickTime > 10:
+        tickTime = currentTime
+        numTicks = numTicks + 1
+        cv2.imwrite("output" + str(numTicks) + ".png", img)
     # Resizes image to set width/height
     img = cv2.resize(img, (w, h))
     #myDrone.get_battery()
